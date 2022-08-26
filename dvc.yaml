@@ -18,58 +18,22 @@ stages:
       - ${data.metrics_file}:
           cache: false
 
-  split-data:
+  fit:
     cmd: 
-      python src/split_data.py 
-      ${data.output_folder} 
-      ${split.output_folder} 
-      ${split.test_size}
-      ${split.metrics_file} 
+      python src/fit.py
+      ${data.output_folder}
+      ${fit.output_folder}
+      ${fit.metrics_folder}
     deps:
     - ${data.output_folder}
-    - src/split_data.py
-    outs:
-    - ${split.output_folder}
-    metrics:
-    - ${split.metrics_file}:
-        cache: false
-
-  train:
-    cmd: 
-      python src/train.py
-      ${split.output_folder}
-      ${train.output_folder}
-    deps:
-    - ${split.output_folder}
-    - src/train.py
+    - src/fit.py
     params:
-      - data.labels
-      - train
+      - fit
     outs:
-    - ${train.output_folder}
+    - ${fit.output_folder}
     metrics:
-      - ${train.metrics_folder}.json:
+      - ${fit.metrics_folder}.json:
           cache: false
     plots:
-      - ${train.metrics_folder}:
+      - ${fit.metrics_folder}:
           cache: false
-
-  eval:
-    cmd: 
-      python src/eval.py
-      ${split.output_folder}/val.json
-      ${train.output_folder}
-      ${eval.output_folder}
-    params:
-      - data.labels
-    deps:
-    - ${split.output_folder}/val.json
-    - ${train.output_folder}
-    - src/eval.py
-    - src/inference.py
-    plots:
-    - ${eval.output_folder}/plots/confusion_matrix.json:
-        cache: false
-        template: confusion
-        x: actual
-        y: predicted

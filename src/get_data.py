@@ -25,7 +25,7 @@ def get_data(output_folder):
     
     logger.info(f"\nSome log.")
 
-    trades = pd.DataFrame(dict(ops_code=["WN COMDTY 1", "CTUSD30Y"], start_time=pd.Timestamp("2022-08-08"), dayfrac=1, quantity=100000, quantity_units="dv01_usd"))
+    trades = pd.DataFrame(dict(ops_code=["WN COMDTY 1", "CTUSD30Y"], start_time=pd.Timestamp(params["data_date"]), dayfrac=1, quantity=100000, quantity_units="dv01_usd"))
     
     trades_file = output_folder + "/trades.csv"
     trades.to_csv(trades_file)

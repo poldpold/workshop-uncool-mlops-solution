@@ -4,18 +4,12 @@ stages:
     cmd: python src/get_data.py --output_folder outs/data
     deps:
     - path: src/get_data.py
-      md5: 0b9160f7475a6aaa50acb793b7527f68
-      size: 991
+      md5: c7452de42878b5e9e672d786d48e7c53
+      size: 998
     params:
       params.yaml:
         data:
-          repo: iterative/dvc
-          labels:
-          - data-sync
-          - experiments
-          - plots
-          since: 2021/01/01
-          until: 2022/05/01
+          data_date: 2022/08/08
           output_folder: outs/data
           metrics_file: outs/data_metrics.json
     outs:
@@ -118,3 +112,32 @@ stages:
     - path: outs/eval/plots/confusion_matrix.json
       md5: 7ad7650d9b00d4ae671f04ba20889b79
       size: 1274
+  fit:
+    cmd: python src/fit.py outs/data outs/fit outs/fit_metrics
+    deps:
+    - path: outs/data
+      md5: 0223fa49fdf31fd4bb2f99cf8322f401.dir
+      size: 136
+      nfiles: 1
+    - path: src/fit.py
+      md5: ef5f1cb19e0a3d286c43877e6b459620
+      size: 947
+    params:
+      params.yaml:
+        fit:
+          output_folder: outs/fit
+          metrics_folder: outs/fit_metrics
+          metrics_file: outs/fit_metrics.json
+          epochs: 8
+    outs:
+    - path: outs/fit
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    - path: outs/fit_metrics
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    - path: outs/fit_metrics.json
+      md5: eba383f3de32d0a53c5962f4119e6dcf
+      size: 23

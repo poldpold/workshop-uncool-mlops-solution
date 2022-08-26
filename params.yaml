@@ -1,26 +1,13 @@
 data:
-  repo: iterative/dvc
-
-  labels:
-  - data-sync
-  - experiments
-  - plots
-  since: 2021/01/01
-  until: 2022/05/01
+  data_date: 2022/08/08
 
   output_folder: outs/data
   metrics_file: outs/data_metrics.json
 
-split:
-  output_folder: outs/split
-  metrics_file: outs/split_metrics.json
-  test_size: 0.1
+fit:
+  output_folder: outs/fit
+  metrics_folder: outs/fit_metrics
+  metrics_file: outs/fit_metrics.json
 
-train:
-  output_folder: outs/train
-  metrics_folder: outs/train_metrics
-  pretrained_model: MoritzLaurer/xtremedistil-l6-h256-mnli-fever-anli-ling-binary
   epochs: 8
 
-eval:
-  output_folder: outs/eval
