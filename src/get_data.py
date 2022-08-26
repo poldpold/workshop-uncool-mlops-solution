@@ -1,70 +1,38 @@
 import json
 import os
+import pandas as pd
 from collections import Counter
-from datetime import datetime
 from pathlib import Path
 
 import fire
 import yaml
-from github import Github
 from loguru import logger
-
-
-def clean_labels(labels):
-    return [
-        x.name.replace("A: ", "")
-        for x in labels
-    ]
 
 
 @logger.catch(reraise=True)
 def get_data(output_folder):
-    with open("params.yaml") as f:
+    base_dir = os.path.dirname(__file__) + "/.."
+    
+    with open(base_dir+"/params.yaml") as f:
         params = yaml.safe_load(f)["data"]
 
-    output_folder = Path(output_folder)
-    for label in params["labels"]:
-        (output_folder / label).mkdir(parents=True, exist_ok=True)
-
-    since = datetime(*map(int, params["since"].split("/")))
-    until = datetime(*map(int, params["until"].split("/")))
-    logger.info(f"Getting issue labels since {since} until {until}")
-
-    logger.info("Initializing Github")
-    if os.environ.get("GITHUB_TOKEN"):
-        g = Github(os.environ["GITHUB_TOKEN"])
-    else:
-        g = Github()
-
-    logger.info(f"Querying repo: {params['repo']}")
-    repo = g.get_repo(params["repo"])
+    output_folder = base_dir+"/"+output_folder
+    
+    Path(output_folder).mkdir(parents=True, exist_ok=True)
 
     metrics = Counter()
-    for issue in repo.get_issues(since=since):
-        issue_labels = [
-            label 
-            for label in clean_labels(issue.labels) 
-            if label in params["labels"]
-        ]
+    metrics["something"] += 1
     
-        if (
-            issue.pull_request 
-            or issue.created_at > until
-            or len(issue_labels) != 1
-        ):
-            logger.debug(f"Skipping issue: {issue.title}")
-            logger.debug(f"Created at: {issue.created_at}")
-            logger.debug(f"Labels: {issue.labels}")
-            continue
+    logger.info(f"\nSome log.")
+
+    trades = pd.DataFrame(dict(ops_code=["WN COMDTY 1", "CTUSD30Y"], start_time=pd.Timestamp("2022-08-08"), dayfrac=1, quantity=100000, quantity_units="dv01_usd"))
     
-        label = str(issue_labels[0])
-        logger.info(f"\nTITLE: {issue.title}\nLABEL: {label}")
+    trades_file = output_folder + "/trades.csv"
+    trades.to_csv(trades_file)
 
-        output_file = output_folder / label / f"{issue.number}.txt"
-        output_file.write_text(f"{issue.title}")
-        metrics[label] += 1
-
-    Path(params["metrics_file"]).write_text(json.dumps(metrics, indent=4))
+    metrics["num_trades"] += len(trades)
+    
+    Path(base_dir+"/"+params["metrics_file"]).write_text(json.dumps(metrics, indent=4))
 
 
 if __name__ == "__main__":

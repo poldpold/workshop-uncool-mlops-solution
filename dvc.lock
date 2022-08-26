@@ -4,8 +4,8 @@ stages:
     cmd: python src/get_data.py --output_folder outs/data
     deps:
     - path: src/get_data.py
-      md5: 74f00e6094a1aca03b21b5e88554df79
-      size: 1939
+      md5: 0b9160f7475a6aaa50acb793b7527f68
+      size: 991
     params:
       params.yaml:
         data:
@@ -20,12 +20,12 @@ stages:
           metrics_file: outs/data_metrics.json
     outs:
     - path: outs/data
-      md5: 7e11ff6b279d54d6aa1823277f4caf5c.dir
-      size: 8087
-      nfiles: 153
+      md5: 0223fa49fdf31fd4bb2f99cf8322f401.dir
+      size: 136
+      nfiles: 1
     - path: outs/data_metrics.json
-      md5: a080fff6d572774d9dce411777d26b19
-      size: 63
+      md5: 514e1d4b4da8fdb6174caca07f91d78c
+      size: 43
   split-data:
     cmd: python src/split_data.py outs/data outs/split 0.1 outs/split_metrics.json
     deps:
